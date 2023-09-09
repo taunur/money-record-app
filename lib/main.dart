@@ -6,7 +6,7 @@ import 'package:money_record/config/app_color.dart';
 import 'package:money_record/config/session.dart';
 // models
 import 'package:money_record/data/models/user_model.dart';
-
+// pages
 import 'package:money_record/presentation/pages/auth/login_page.dart';
 import 'package:money_record/presentation/pages/home_page.dart';
 
