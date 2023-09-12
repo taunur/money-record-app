@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:money_record/config/app_assets.dart';
 import 'package:money_record/config/app_color.dart';
+import 'package:money_record/config/app_format.dart';
 import 'package:money_record/config/session.dart';
+import 'package:money_record/presentation/controllers/c_home.dart';
 import 'package:money_record/presentation/controllers/c_user.dart';
 import 'package:money_record/presentation/pages/auth/login_page.dart';
 
@@ -20,29 +22,47 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final cUser = Get.put(CUser());
+  final cHome = Get.put(CHome());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    cHome.getAnalysis(cUser.data.idUser!);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     // barchart
-    List<OrdinalData> ordinalList = [
-      OrdinalData(domain: 'Sen', measure: 3),
-      OrdinalData(domain: 'Sel', measure: 5),
-      OrdinalData(domain: 'Rab', measure: 9),
-      OrdinalData(domain: 'Kam', measure: 6.5),
-      OrdinalData(domain: 'Jum', measure: 6.5),
-      OrdinalData(domain: 'Sab', measure: 6.5),
-      OrdinalData(domain: 'Min', measure: 6.5),
-    ];
-    final ordinalGroup = [
+    List<OrdinalData> weeklyList = [];
+    for (int index = 0; index < cHome.weekText().length; index++) {
+      weeklyList.add(
+        OrdinalData(
+          domain: cHome.weekText()[index],
+          measure: cHome.week[index],
+        ),
+      );
+    }
+    final weeklyGroup = [
       OrdinalGroup(
         id: '1',
-        data: ordinalList,
+        data: weeklyList,
       ),
     ];
+
     // piechart
-    List<OrdinalData> ordinalDataList = [
-      OrdinalData(domain: 'Mon', measure: 3, color: AppColor.primary),
-      OrdinalData(domain: 'Tue', measure: 5, color: AppColor.chart),
+    List<OrdinalData> monthList = [
+      OrdinalData(
+          domain: 'income',
+          measure: cHome.monthIncome,
+          color: AppColor.primary),
+      OrdinalData(
+          domain: 'outcome',
+          measure: cHome.monthOutcome,
+          color: AppColor.chart),
+      if (cHome.monthIncome == 0 && cHome.monthOutcome == 0)
+        OrdinalData(
+            domain: 'nol', measure: 1, color: AppColor.bg.withOpacity(0.5)),
     ];
 
     return Scaffold(
@@ -91,10 +111,12 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
+                    DView.spaceHeight(6),
                     Material(
                       color: AppColor.primary,
                       borderRadius: BorderRadius.circular(30),
                       child: InkWell(
+                        borderRadius: BorderRadius.circular(30),
                         onTap: () {
                           Session.clearUser();
                           Get.off(() => const LoginPage());
@@ -239,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                   ),
                   DView.spaceHeight(),
-                  weeklyBarChart(ordinalGroup),
+                  weeklyBarChart(weeklyGroup),
                   DView.spaceHeight(),
                   Text(
                     "Perbandingan Bulan Ini",
@@ -247,7 +269,7 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.w600,
                         ),
                   ),
-                  monthlyPieChart(context, ordinalDataList),
+                  monthlyPieChart(context, monthList),
                 ],
               ),
             ),
@@ -273,13 +295,16 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Center(
-                  child: Text(
-                    "60%",
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColor.primary,
-                        ),
-                  ),
+                  child: Obx(() {
+                    return Text(
+                      "${cHome.percentIncome}%",
+                      style:
+                          Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: AppColor.primary,
+                              ),
+                    );
+                  }),
                 )
               ],
             ),
@@ -313,19 +338,21 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             DView.spaceHeight(20),
-            const Text('Pemasukan'),
-            const Text("lebih besar 20%"),
-            const Text("dari Pengeluaran"),
+            Obx(() {
+              return Text(cHome.monthPercent);
+            }),
             DView.spaceHeight(20),
             const Text("Atau setara:"),
-            const Text(
-              "Rp. 20.000, 00",
-              style: TextStyle(
-                color: AppColor.primary,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            Obx(() {
+              return Text(
+                AppFormat.currency(cHome.differentMonth.toString()),
+                style: const TextStyle(
+                  color: AppColor.primary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              );
+            }),
           ],
         )
       ],
@@ -355,20 +382,24 @@ class _HomePageState extends State<HomePage> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
-            child: Text(
-              'Rp. 500. 000',
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppColor.secondary,
-                  ),
-            ),
+            child: Obx(() {
+              return Text(
+                AppFormat.currency(cHome.today.toString()),
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.secondary,
+                    ),
+              );
+            }),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 30),
-            child: Text(
-              '+ 20% dibanding kemarin',
-              style: TextStyle(color: AppColor.bg),
-            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 30),
+            child: Obx(() {
+              return Text(
+                cHome.todayPercent,
+                style: TextStyle(color: AppColor.bg),
+              );
+            }),
           ),
           Container(
             margin: const EdgeInsets.fromLTRB(16, 0, 0, 16),

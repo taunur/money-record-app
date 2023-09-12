@@ -71,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           Image.asset(
                             AppAsset.logo,
+                            height: 120,
                           ),
                           DView.spaceHeight(40),
                           TextFormField(
@@ -130,7 +131,9 @@ class _LoginPageState extends State<LoginPage> {
                               onTap: () => login(),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 42, vertical: 16),
+                                  horizontal: 42,
+                                  vertical: 16,
+                                ),
                                 child: isLoading
                                     ? const CircularProgressIndicator(
                                         valueColor:
