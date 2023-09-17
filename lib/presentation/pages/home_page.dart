@@ -123,46 +123,54 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
-                children: [
-                  Text(
-                    "Pengeluaran Hari Ini",
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  DView.spaceHeight(),
-                  cardToday(context),
-                  Container(
-                    height: 8,
-                    width: 80,
-                    margin: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width / 3,
-                      vertical: 24,
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  cHome.getAnalysis(cUser.data.idUser!);
+                },
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                  children: [
+                    Text(
+                      "Pengeluaran Hari Ini",
+                      style:
+                          Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
                     ),
-                    decoration: BoxDecoration(
-                      color: AppColor.bg,
-                      borderRadius: BorderRadius.circular(6),
+                    DView.spaceHeight(),
+                    cardToday(context),
+                    Container(
+                      height: 8,
+                      width: 80,
+                      margin: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width / 3,
+                        vertical: 24,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColor.bg,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
                     ),
-                  ),
-                  Text(
-                    "Pengeluaran Minggu Ini",
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  DView.spaceHeight(),
-                  weeklyBarChart(weeklyGroup),
-                  DView.spaceHeight(),
-                  Text(
-                    "Perbandingan Bulan Ini",
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  monthlyPieChart(context, monthList),
-                ],
+                    Text(
+                      "Pengeluaran Minggu Ini",
+                      style:
+                          Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                    ),
+                    DView.spaceHeight(),
+                    weeklyBarChart(weeklyGroup),
+                    DView.spaceHeight(),
+                    Text(
+                      "Perbandingan Bulan Ini",
+                      style:
+                          Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                    ),
+                    monthlyPieChart(context, monthList),
+                  ],
+                ),
               ),
             ),
           ],
