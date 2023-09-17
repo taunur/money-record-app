@@ -1,6 +1,7 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:money_record/data/sources/source_history.dart';
 import 'package:get/get.dart';
-
 
 class CHome extends GetxController {
   final _today = 0.0.obs;
@@ -55,8 +56,8 @@ class CHome extends GetxController {
     _todayPercent.value = isSame
         ? '100% sama dengan kemarin'
         : isPlus
-        ? '+${percent.toStringAsFixed(1)}% dibanding kemarin'
-        : '-${percent.toStringAsFixed(1)}% dibanding kemarin';
+            ? '+${percent.toStringAsFixed(1)}% dibanding kemarin'
+            : '-${percent.toStringAsFixed(1)}% dibanding kemarin';
 
     _week.value = List.castFrom(data['week'].map((e) => e.toDouble()).toList());
 
@@ -66,13 +67,13 @@ class CHome extends GetxController {
     bool isSameMonth = monthIncome.isEqual(monthOutcome);
     bool isPlusMonth = monthIncome.isGreaterThan(monthOutcome);
     double dividerMonth =
-    (monthIncome + monthOutcome) == 0 ? 1 : (monthIncome + monthOutcome);
+        (monthIncome + monthOutcome) == 0 ? 1 : (monthIncome + monthOutcome);
     double percentMonth = (differentMonth / dividerMonth) * 100;
     _percentIncome.value = percentMonth.toStringAsFixed(1);
     _monthPercent.value = isSameMonth
         ? 'Pemasukan\n100% sama\ndengan Pengeluaran'
         : isPlusMonth
-        ? 'Pemasukan\nlebih besar $percentIncome%\ndari Pengeluaran'
-        : 'Pemasukan\nlebih kecil $percentIncome%\ndari Pengeluaran';
+            ? 'Pemasukan\nlebih besar $percentIncome%\ndari Pengeluaran'
+            : 'Pemasukan\nlebih kecil $percentIncome%\ndari Pengeluaran';
   }
 }

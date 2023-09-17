@@ -135,10 +135,33 @@ class _LoginPageState extends State<LoginPage> {
                                   vertical: 16,
                                 ),
                                 child: isLoading
-                                    ? const CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          Colors.white,
+                                    ? SizedBox(
+                                        width:
+                                            MediaQuery.sizeOf(context).width /
+                                                5,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            const SizedBox(
+                                              height: 24.0,
+                                              width: 24.0,
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            DView.spaceWidth(8),
+                                            const Text(
+                                              "Login",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       )
                                     : const Text(
