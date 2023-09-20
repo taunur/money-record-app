@@ -13,6 +13,7 @@ import 'package:money_record/presentation/controllers/c_home.dart';
 import 'package:money_record/presentation/controllers/c_user.dart';
 import 'package:money_record/presentation/pages/auth/login_page.dart';
 import 'package:money_record/presentation/pages/history/add_history_page.dart';
+import 'package:money_record/presentation/pages/history/income_outcome_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -69,59 +70,7 @@ class _HomePageState extends State<HomePage> {
         endDrawer: drawer(),
         body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
-              child: Row(
-                children: [
-                  Image.asset(AppAsset.profile),
-                  DView.spaceWidth(4),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Hi,",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Obx(
-                          () {
-                            return Text(
-                              cUser.data.name ?? '',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  Builder(builder: (ctx) {
-                    return Material(
-                      borderRadius: BorderRadius.circular(4),
-                      color: AppColor.chart,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(4),
-                        onTap: () {
-                          Scaffold.of(ctx).openEndDrawer();
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(6),
-                          child: Icon(
-                            Icons.menu,
-                            color: AppColor.primary,
-                          ),
-                        ),
-                      ),
-                    );
-                  })
-                ],
-              ),
-            ),
+            header(),
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
@@ -130,44 +79,15 @@ class _HomePageState extends State<HomePage> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
                   children: [
-                    Text(
-                      "Pengeluaran Hari Ini",
-                      style:
-                          Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                    ),
+                    title(context, "Pengeluaran Hari Ini"),
                     DView.spaceHeight(),
                     cardToday(context),
-                    Container(
-                      height: 8,
-                      width: 80,
-                      margin: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width / 3,
-                        vertical: 24,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColor.bg,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                    Text(
-                      "Pengeluaran Minggu Ini",
-                      style:
-                          Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                    ),
+                    line(context),
+                    title(context, "Pengeluaran Minggu Ini"),
                     DView.spaceHeight(),
                     weeklyBarChart(weeklyGroup),
                     DView.spaceHeight(),
-                    Text(
-                      "Perbandingan Bulan Ini",
-                      style:
-                          Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                    ),
+                    title(context, "Perbandingan Bulan Ini"),
                     monthlyPieChart(context, monthList),
                   ],
                 ),
@@ -175,6 +95,86 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ));
+  }
+
+  Text title(BuildContext context, String title) {
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+    );
+  }
+
+  Container line(BuildContext context) {
+    return Container(
+      height: 8,
+      width: 80,
+      margin: EdgeInsets.symmetric(
+        horizontal: MediaQuery.of(context).size.width / 3,
+        vertical: 24,
+      ),
+      decoration: BoxDecoration(
+        color: AppColor.bg,
+        borderRadius: BorderRadius.circular(6),
+      ),
+    );
+  }
+
+  Padding header() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
+      child: Row(
+        children: [
+          Image.asset(AppAsset.profile),
+          DView.spaceWidth(4),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Hi,",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+                Obx(
+                  () {
+                    return Text(
+                      cUser.data.name ?? '',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          Builder(builder: (ctx) {
+            return Material(
+              borderRadius: BorderRadius.circular(4),
+              color: AppColor.chart,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(4),
+                onTap: () {
+                  Scaffold.of(ctx).openEndDrawer();
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(6),
+                  child: Icon(
+                    Icons.menu,
+                    color: AppColor.primary,
+                  ),
+                ),
+              ),
+            );
+          })
+        ],
+      ),
+    );
   }
 
   Drawer drawer() {
@@ -267,7 +267,13 @@ class _HomePageState extends State<HomePage> {
           ),
           const Divider(height: 1),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              Get.to(
+                () => IncomeOutcomePage(
+                  type: "Pemasukan",
+                ),
+              );
+            },
             leading: const Icon(Icons.south_west),
             horizontalTitleGap: 0,
             title: const Text("Pemasukan"),
@@ -275,7 +281,13 @@ class _HomePageState extends State<HomePage> {
           ),
           const Divider(height: 1),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              Get.to(
+                () => IncomeOutcomePage(
+                  type: "Pengeluaran",
+                ),
+              );
+            },
             leading: const Icon(Icons.north_east),
             horizontalTitleGap: 0,
             title: const Text("Pengeluaran"),

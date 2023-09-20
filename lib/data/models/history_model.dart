@@ -1,25 +1,25 @@
-class History {
-  String idHistory;
-  String idUser;
-  String type;
-  String date;
-  String total;
-  String details;
-  String createdAt;
-  String updatedAt;
+class HistoryModel {
+  String? idHistory;
+  String? idUser;
+  String? type;
+  String? date;
+  String? total;
+  String? details;
+  String? createdAt;
+  String? updatedAt;
 
-  History({
-    required this.idHistory,
-    required this.idUser,
-    required this.type,
-    required this.date,
-    required this.total,
-    required this.details,
-    required this.createdAt,
-    required this.updatedAt,
+  HistoryModel({
+    this.idHistory,
+    this.idUser,
+    this.type,
+    this.date,
+    this.total,
+    this.details,
+    this.createdAt,
+    this.updatedAt,
   });
 
-  factory History.fromJson(Map<String, dynamic> json) => History(
+  factory HistoryModel.fromJson(Map<String, dynamic> json) => HistoryModel(
         idHistory: json["id_history"],
         idUser: json["id_user"],
         type: json["type"],

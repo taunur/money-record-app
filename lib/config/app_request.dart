@@ -12,7 +12,7 @@ class AppRequest {
       Map responseBody = jsonDecode(response.body);
       return responseBody;
     } catch (e) {
-      DMethod.printTitle('ctach', e.toString());
+      DMethod.printTitle('catch', e.toString());
       return null;
     }
   }
@@ -30,7 +30,7 @@ class AppRequest {
       Map responseBody = jsonDecode(response.body);
       return responseBody;
     } catch (e) {
-      DMethod.printTitle('ctach', e.toString());
+      DMethod.printTitle('catch', e.toString());
       return null;
     }
   }
