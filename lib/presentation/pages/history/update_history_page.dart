@@ -8,37 +8,58 @@ import 'package:intl/intl.dart';
 import 'package:money_record/config/app_color.dart';
 import 'package:money_record/config/app_format.dart';
 import 'package:money_record/data/sources/source_history.dart';
-import 'package:money_record/presentation/controllers/c_add_history.dart';
+import 'package:money_record/presentation/controllers/c_update_history.dart';
 import 'package:money_record/presentation/controllers/c_user.dart';
 
-class AddHistoryPage extends StatelessWidget {
-  const AddHistoryPage({super.key});
+class UpdateHistoryPage extends StatefulWidget {
+  const UpdateHistoryPage({
+    super.key,
+    required this.type,
+    required this.date,
+    required this.idHistory,
+  });
+
+  final String type;
+  final String date;
+  final String idHistory;
+
+  @override
+  State<UpdateHistoryPage> createState() => _UpdateHistoryPageState();
+}
+
+class _UpdateHistoryPageState extends State<UpdateHistoryPage> {
+  final cUpdateHistory = Get.put(CUpdateHistory());
+  final controllerName = TextEditingController();
+  final controllerPrice = TextEditingController();
+  final cUser = Get.put(CUser());
+
+  updateHistory() async {
+    bool success = await SourceHistory.update(
+      context,
+      widget.idHistory,
+      cUser.data.idUser!,
+      cUpdateHistory.date,
+      cUpdateHistory.type,
+      jsonEncode(cUpdateHistory.items),
+      cUpdateHistory.total.toString(),
+    );
+    if (success) {
+      Future.delayed(const Duration(milliseconds: 3000), () {
+        Get.back(result: true);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    cUpdateHistory.init(cUser.data.idUser, widget.date);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cAddHistory = Get.put(CAddHistory());
-    final controllerName = TextEditingController();
-    final controllerPrice = TextEditingController();
-    final cUser = Get.put(CUser());
-
-    addHistory() async {
-      bool success = await SourceHistory.add(
-        context,
-        cUser.data.idUser!,
-        cAddHistory.date,
-        cAddHistory.type,
-        jsonEncode(cAddHistory.items),
-        cAddHistory.total.toString(),
-      );
-      if (success) {
-        Future.delayed(const Duration(milliseconds: 3000), () {
-          Get.back(result: true);
-        });
-      }
-    }
-
     return Scaffold(
-      appBar: DView.appBarLeft('Tambah Baru'),
+      appBar: DView.appBarLeft(widget.type),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -47,7 +68,7 @@ class AddHistoryPage extends StatelessWidget {
             children: [
               Obx(() {
                 return Text(
-                  cAddHistory.date,
+                  cUpdateHistory.date,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 );
               }),
@@ -61,7 +82,7 @@ class AddHistoryPage extends StatelessWidget {
                     lastDate: DateTime(DateTime.now().year + 1),
                   );
                   if (result != null) {
-                    cAddHistory.setDate(
+                    cUpdateHistory.setDate(
                       DateFormat('yyyy-MM-dd').format(result),
                     );
                   }
@@ -79,7 +100,7 @@ class AddHistoryPage extends StatelessWidget {
           DView.spaceHeight(8),
           Obx(() {
             return DropdownButtonFormField(
-              value: cAddHistory.type,
+              value: cUpdateHistory.type,
               items: ['Pemasukan', 'Pengeluaran'].map((e) {
                 return DropdownMenuItem(
                   value: e,
@@ -87,7 +108,7 @@ class AddHistoryPage extends StatelessWidget {
                 );
               }).toList(),
               onChanged: (value) {
-                cAddHistory.setType(value);
+                cUpdateHistory.setType(value);
               },
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -111,7 +132,7 @@ class AddHistoryPage extends StatelessWidget {
           DView.spaceHeight(),
           ElevatedButton(
             onPressed: () {
-              cAddHistory.addItem({
+              cUpdateHistory.addItem({
                 'name': controllerName.text,
                 'price': controllerPrice.text,
               });
@@ -150,7 +171,7 @@ class AddHistoryPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.grey),
             ),
-            child: GetBuilder<CAddHistory>(builder: (_) {
+            child: GetBuilder<CUpdateHistory>(builder: (_) {
               if (_.items.isEmpty) {
                 return const Text(
                   "No items added yet",
@@ -185,7 +206,7 @@ class AddHistoryPage extends StatelessWidget {
               DView.spaceWidth(4),
               Obx(() {
                 return Text(
-                  AppFormat.currency(cAddHistory.total.toString()),
+                  AppFormat.currency(cUpdateHistory.total.toString()),
                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                         fontWeight: FontWeight.w600,
                         color: AppColor.primary,
@@ -200,13 +221,13 @@ class AddHistoryPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             child: InkWell(
               onTap: () {
-                addHistory();
+                updateHistory();
               },
               child: const Padding(
                 padding: EdgeInsets.symmetric(vertical: 12),
                 child: Center(
                   child: Text(
-                    "Submit",
+                    "Update",
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       color: Colors.white,

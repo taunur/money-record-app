@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:get/get.dart';
 import 'package:money_record/data/models/history_model.dart';
 import 'package:money_record/data/sources/source_history.dart';

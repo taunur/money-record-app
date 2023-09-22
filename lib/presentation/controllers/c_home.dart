@@ -4,12 +4,18 @@ import 'package:money_record/data/sources/source_history.dart';
 import 'package:get/get.dart';
 
 class CHome extends GetxController {
+  // loading
+  final _loading = false.obs;
+  bool get loading => _loading.value;
+
+  // card today
   final _today = 0.0.obs;
   double get today => _today.value;
-
   final _todayPercent = ''.obs;
+
   String get todayPercent => _todayPercent.value;
 
+  // barchart week
   final _week = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0].obs;
   List<double> get week => _week.value;
 
@@ -27,6 +33,7 @@ class CHome extends GetxController {
     ];
   }
 
+  // perbandingan bulan ini
   final _monthIncome = 0.0.obs;
   double get monthIncome => _monthIncome.value;
 
@@ -43,6 +50,10 @@ class CHome extends GetxController {
   double get differentMonth => _differentMonth.value;
 
   getAnalysis(String idUser) async {
+    // loading
+    _loading.value = true;
+    update();
+
     Map data = await SourceHistory.analysis(idUser);
 
     // today outcome
@@ -61,6 +72,7 @@ class CHome extends GetxController {
 
     _week.value = List.castFrom(data['week'].map((e) => e.toDouble()).toList());
 
+    // bulab outcome
     _monthIncome.value = data['month']['income'].toDouble();
     _monthOutcome.value = data['month']['outcome'].toDouble();
     _differentMonth.value = (monthIncome - monthOutcome).abs();
@@ -75,5 +87,10 @@ class CHome extends GetxController {
         : isPlusMonth
             ? 'Pemasukan\nlebih besar $percentIncome%\ndari Pengeluaran'
             : 'Pemasukan\nlebih kecil $percentIncome%\ndari Pengeluaran';
+
+    Future.delayed(const Duration(milliseconds: 900), () {
+      _loading.value = false;
+      update();
+    });
   }
 }

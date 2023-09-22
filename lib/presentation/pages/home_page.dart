@@ -76,21 +76,24 @@ class _HomePageState extends State<HomePage> {
                 onRefresh: () async {
                   cHome.getAnalysis(cUser.data.idUser!);
                 },
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
-                  children: [
-                    title(context, "Pengeluaran Hari Ini"),
-                    DView.spaceHeight(),
-                    cardToday(context),
-                    line(context),
-                    title(context, "Pengeluaran Minggu Ini"),
-                    DView.spaceHeight(),
-                    weeklyBarChart(weeklyGroup),
-                    DView.spaceHeight(),
-                    title(context, "Perbandingan Bulan Ini"),
-                    monthlyPieChart(context, monthList),
-                  ],
-                ),
+                child: GetBuilder<CHome>(builder: (_) {
+                  if (_.loading) return DView.loadingCircle();
+                  return ListView(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                    children: [
+                      title(context, "Pengeluaran Hari Ini"),
+                      DView.spaceHeight(),
+                      cardToday(context),
+                      line(context),
+                      title(context, "Pengeluaran Minggu Ini"),
+                      DView.spaceHeight(),
+                      weeklyBarChart(weeklyGroup),
+                      DView.spaceHeight(),
+                      title(context, "Perbandingan Bulan Ini"),
+                      monthlyPieChart(context, monthList),
+                    ],
+                  );
+                }),
               ),
             ),
           ],
@@ -269,7 +272,7 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             onTap: () {
               Get.to(
-                () => IncomeOutcomePage(
+                () => const IncomeOutcomePage(
                   type: "Pemasukan",
                 ),
               );
@@ -283,7 +286,7 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             onTap: () {
               Get.to(
-                () => IncomeOutcomePage(
+                () => const IncomeOutcomePage(
                   type: "Pengeluaran",
                 ),
               );

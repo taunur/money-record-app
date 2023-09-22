@@ -1,3 +1,4 @@
+import 'package:d_info/d_info.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,8 +6,10 @@ import 'package:intl/intl.dart';
 import 'package:money_record/config/app_color.dart';
 import 'package:money_record/config/app_format.dart';
 import 'package:money_record/data/models/history_model.dart';
+import 'package:money_record/data/sources/source_history.dart';
 import 'package:money_record/presentation/controllers/c_income_outcome.dart';
 import 'package:money_record/presentation/controllers/c_user.dart';
+import 'package:money_record/presentation/pages/history/update_history_page.dart';
 
 class IncomeOutcomePage extends StatefulWidget {
   const IncomeOutcomePage({super.key, required this.type});
@@ -22,6 +25,38 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
   final controllerSearch = TextEditingController();
   refresh() {
     cInOut.getList(cUser.data.idUser, widget.type);
+  }
+
+  menuOption(String value, HistoryModel history) async {
+    if (value == 'update') {
+      Get.to(() => UpdateHistoryPage(
+            date: history.date!,
+            idHistory: history.idHistory!,
+            type: history.type == "Pemasukan"
+                ? "Update Pemasukan"
+                : history.type == "Pengeluaran"
+                    ? "Update Pengeluaran"
+                    : "Error",
+          ))?.then((value) {
+        if (value ?? false) {
+          refresh();
+        }
+      });
+    } else if (value == 'delete') {
+      bool? yes = await DInfo.dialogConfirmation(
+        context,
+        "Hapus",
+        "Yakin untuk menghapus ?",
+        textNo: 'Batal',
+        textYes: 'Ya',
+      );
+      if (yes!) {
+        bool success = await SourceHistory.delete(history.idHistory!);
+        if (success) {
+          refresh();
+        }
+      }
+    }
   }
 
   @override
@@ -46,7 +81,11 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
               return Card(
                 elevation: 4,
                 margin: EdgeInsets.fromLTRB(
-                    16, index == 0 ? 16 : 8, 16, index == 0 ? 16 : 8),
+                  16,
+                  index == 0 ? 16 : 8,
+                  16,
+                  index == _.list.length - 1 ? 16 : 8,
+                ),
                 child: Row(
                   children: [
                     DView.spaceWidth(),
@@ -69,9 +108,18 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
                         textAlign: TextAlign.end,
                       ),
                     ),
-                    PopupMenuButton(
-                      itemBuilder: (context) => [],
-                      onSelected: (value) {},
+                    PopupMenuButton<String>(
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: "update",
+                          child: Text("Update"),
+                        ),
+                        const PopupMenuItem(
+                          value: "delete",
+                          child: Text("Delete"),
+                        ),
+                      ],
+                      onSelected: (value) => menuOption(value, history),
                     ),
                   ],
                 ),
