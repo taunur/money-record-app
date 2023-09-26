@@ -7,7 +7,7 @@ class AppRequest {
   static Future<Map?> gets(String url, {Map<String, String>? headers}) async {
     try {
       var response = await http.get(Uri.parse(url), headers: headers);
-      DMethod.printTitle('try - $url', response.body);
+      DMethod.printTitle('try get - $url', response.body);
 
       Map responseBody = jsonDecode(response.body);
       return responseBody;
@@ -25,7 +25,7 @@ class AppRequest {
         body: body,
         headers: headers,
       );
-      DMethod.printTitle('try - $url', response.body);
+      DMethod.printTitle('try post - $url', response.body);
 
       Map responseBody = jsonDecode(response.body);
       return responseBody;

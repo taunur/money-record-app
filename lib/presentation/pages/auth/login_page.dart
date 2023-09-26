@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   bool isLoading = false; // Add this variable
 
-  login() async {
+  void login() async {
     if (mounted && formKey.currentState!.validate()) {
       setState(() {
         isLoading = true; // Show loading indicator
@@ -48,6 +48,13 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     }
+  }
+
+  @override
+  void dispose() {
+    controllerEmail.dispose();
+    controllerPassword.dispose();
+    super.dispose();
   }
 
   @override

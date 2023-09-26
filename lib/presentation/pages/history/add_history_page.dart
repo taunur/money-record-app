@@ -21,7 +21,7 @@ class AddHistoryPage extends StatelessWidget {
     final controllerPrice = TextEditingController();
     final cUser = Get.put(CUser());
 
-    addHistory() async {
+    void addHistory() async {
       bool success = await SourceHistory.add(
         context,
         cUser.data.idUser!,

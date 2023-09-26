@@ -100,6 +100,7 @@ class SourceHistory {
       } else {
         DInfo.dialogError(context, "Gagal Update History");
       }
+      DInfo.closeDialog(context);
     }
 
     return responseBody['success'];
@@ -171,5 +172,39 @@ class SourceHistory {
     }
 
     return null;
+  }
+
+  static Future<List<HistoryModel>> history(String idUser) async {
+    String url = '${Api.history}/history.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+    });
+
+    if (responseBody == null) return [];
+
+    if (responseBody['success']) {
+      List list = responseBody['data'];
+      return list.map((e) => HistoryModel.fromJson(e)).toList();
+    }
+
+    return [];
+  }
+
+  static Future<List<HistoryModel>> historySearch(
+      String idUser, String date) async {
+    String url = '${Api.history}/history_search.php';
+    Map? responseBody = await AppRequest.post(url, {
+      'id_user': idUser,
+      'date': date,
+    });
+
+    if (responseBody == null) return [];
+
+    if (responseBody['success']) {
+      List list = responseBody['data'];
+      return list.map((e) => HistoryModel.fromJson(e)).toList();
+    }
+
+    return [];
   }
 }

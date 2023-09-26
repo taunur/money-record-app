@@ -33,7 +33,7 @@ class _UpdateHistoryPageState extends State<UpdateHistoryPage> {
   final controllerPrice = TextEditingController();
   final cUser = Get.put(CUser());
 
-  updateHistory() async {
+  void updateHistory() async {
     bool success = await SourceHistory.update(
       context,
       widget.idHistory,

@@ -19,7 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
 
-  register() async {
+  void register() async {
     if (formKey.currentState!.validate()) {
       // show loading
       setState(() {
@@ -37,6 +37,14 @@ class _RegisterPageState extends State<RegisterPage> {
         isLoading = false; // Hide loading indicator
       });
     }
+  }
+
+  @override
+  void dispose() {
+    controllerName.dispose();
+    controllerEmail.dispose();
+    controllerPassword.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,6 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: [
                           Image.asset(
                             AppAsset.logo,
+                            height: 120,
                           ),
                           DView.spaceHeight(40),
                           TextFormField(
