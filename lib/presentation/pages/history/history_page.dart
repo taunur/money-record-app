@@ -7,8 +7,9 @@ import 'package:money_record/config/app_color.dart';
 import 'package:money_record/config/app_format.dart';
 import 'package:money_record/data/models/history_model.dart';
 import 'package:money_record/data/sources/source_history.dart';
-import 'package:money_record/presentation/controllers/c_history.dart';
+import 'package:money_record/presentation/controllers/history/c_history.dart';
 import 'package:money_record/presentation/controllers/c_user.dart';
+import 'package:money_record/presentation/pages/history/detail_history.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -69,48 +70,60 @@ class _HistoryPageState extends State<HistoryPage> {
                   16,
                   index == _.list.length - 1 ? 16 : 8,
                 ),
-                child: Row(
-                  children: [
-                    DView.spaceWidth(),
-                    history.type == "Pemasukan"
-                        ? const Icon(
-                            Icons.south_west,
-                            color: Colors.green,
-                          )
-                        : history.type == "Pengeluaran"
-                            ? const Icon(
-                                Icons.north_east,
-                                color: Colors.red,
-                              )
-                            : const Text("None"),
-                    DView.spaceWidth(),
-                    Text(
-                      AppFormat.date(history.date!),
-                      style: const TextStyle(
-                        color: AppColor.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(4),
+                  onTap: () {
+                    Get.to(
+                      () => DetailHistoryPage(
+                        idUser: cUser.data.idUser!,
+                        date: history.date!,
+                        type: history.type!,
                       ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        AppFormat.currency(history.total!),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      DView.spaceWidth(),
+                      history.type == "Pemasukan"
+                          ? const Icon(
+                              Icons.south_west,
+                              color: Colors.green,
+                            )
+                          : history.type == "Pengeluaran"
+                              ? const Icon(
+                                  Icons.north_east,
+                                  color: Colors.red,
+                                )
+                              : const Text("None"),
+                      DView.spaceWidth(),
+                      Text(
+                        AppFormat.date(history.date!),
                         style: const TextStyle(
                           color: AppColor.primary,
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
-                        textAlign: TextAlign.end,
                       ),
-                    ),
-                    IconButton(
-                      onPressed: () => delete(history.idHistory!),
-                      icon: const Icon(
-                        Icons.delete_forever,
-                        color: Colors.red,
+                      Expanded(
+                        child: Text(
+                          AppFormat.currency(history.total!),
+                          style: const TextStyle(
+                            color: AppColor.primary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                          textAlign: TextAlign.end,
+                        ),
                       ),
-                    ),
-                  ],
+                      IconButton(
+                        onPressed: () => delete(history.idHistory!),
+                        icon: const Icon(
+                          Icons.delete_forever,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

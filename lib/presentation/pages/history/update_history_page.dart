@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:money_record/config/app_color.dart';
 import 'package:money_record/config/app_format.dart';
 import 'package:money_record/data/sources/source_history.dart';
-import 'package:money_record/presentation/controllers/c_update_history.dart';
+import 'package:money_record/presentation/controllers/history/c_update_history.dart';
 import 'package:money_record/presentation/controllers/c_user.dart';
 
 class UpdateHistoryPage extends StatefulWidget {
